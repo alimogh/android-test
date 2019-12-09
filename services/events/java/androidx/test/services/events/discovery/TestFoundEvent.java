@@ -17,49 +17,31 @@
 package androidx.test.services.events.discovery;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 import androidx.test.services.events.TestCase;
 
 /**
  * Denotes that test discovery has found a test case. The {@link TestCase} is provided along with
  * the event.
  */
-public class TestFoundEvent implements Parcelable {
+public class TestFoundEvent extends TestDiscoveryEvent {
+  public final TestCase testCase;
 
-  private final TestCase testCase;
-
-  public TestCase getTestCase() {
-    return testCase;
-  }
-
-  TestFoundEvent(TestCase testCase) {
+  public TestFoundEvent(TestCase testCase) {
     this.testCase = testCase;
   }
 
-  private TestFoundEvent(Parcel source) {
+  TestFoundEvent(Parcel source) {
     this.testCase = new TestCase(source);
   }
 
   @Override
-  public int describeContents() {
-    return 0;
+  public void writeToParcel(Parcel parcel, int i) {
+    super.writeToParcel(parcel, i);
+    testCase.writeToParcel(parcel, i);
   }
 
   @Override
-  public void writeToParcel(Parcel parcel, int i) {
-    testCase.writeToParcel(parcel, 0);
+  String instanceType() {
+    return getClass().getName();
   }
-
-  public static final Parcelable.Creator<TestFoundEvent> CREATOR =
-      new Parcelable.Creator<TestFoundEvent>() {
-        @Override
-        public TestFoundEvent createFromParcel(Parcel source) {
-          return new TestFoundEvent(source);
-        }
-
-        @Override
-        public TestFoundEvent[] newArray(int size) {
-          return new TestFoundEvent[size];
-        }
-      };
 }

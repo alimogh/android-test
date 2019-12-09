@@ -17,40 +17,34 @@
 package androidx.test.services.events.run;
 
 import android.os.Parcel;
-import androidx.test.services.events.Failure;
 import androidx.test.services.events.TestCase;
 
-/**
- * Denotes that the test ended with a TEST_FAILURE. It has the {@link Failure} object to denote what
- * was the cause of the failure/error.
- */
-public class TestFailureEvent extends TestRunEventWithTestCase {
-  public final Failure failure;
+/** Represents a {@link TestRunEvent} with an associated {@link TestCase}. */
+public abstract class TestRunEventWithTestCase extends TestRunEvent {
+  /** The {@link TestCase} this event is associated with. */
+  public final TestCase testCase;
 
   /**
-   * Constructor to create {@link TestFailureEvent}.
+   * Creates a {@link TestRunEventWithTestCase} from an {@link Parcel}.
    *
-   * @param testCase the test case that this event is for.
-   * @param failure the failure associated with the test case.
+   * @param source {@link Parcel} to create the {@link TestCase} from
    */
-  public TestFailureEvent(TestCase testCase, Failure failure) {
-    super(testCase);
-    this.failure = failure;
+  TestRunEventWithTestCase(Parcel source) {
+    testCase = new TestCase(source);
   }
 
-  TestFailureEvent(Parcel source) {
-    super(source);
-    failure = new Failure(source);
-  }
-
-  @Override
-  String instanceType() {
-    return getClass().getName();
+  /**
+   * Creates a {@link TestRunEventWithTestCase}.
+   *
+   * @param testCase the test case this event represents,
+   */
+  TestRunEventWithTestCase(TestCase testCase) {
+    this.testCase = testCase;
   }
 
   @Override
   public void writeToParcel(Parcel parcel, int i) {
-    super.writeToParcel(parcel, 0);
-    failure.writeToParcel(parcel, 0);
+    super.writeToParcel(parcel, i);
+    testCase.writeToParcel(parcel, i);
   }
 }

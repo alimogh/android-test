@@ -20,39 +20,25 @@ import android.os.Parcel;
 import androidx.test.services.events.TestCase;
 
 /**
- * Denotes that the test ended with a TEST_RUN_STARTED. It has the {@link TestCase} object to denote
- * which case this event is associated to.
+ * Denotes that the test ended with a TEST_RUN_STARTED event. It has the {@link TestCase} object to
+ * denote which case this event is associated to.
  */
-public class TestRunStartedEvent extends TestRunEvent {
-
-  /**
-   * Constructor to create an {@link TestRunEvent} from an Android Parcel.
-   *
-   * @param source Android {@link Parcel} to read from.
-   */
-  TestRunStartedEvent(Parcel source) {
-    super(source);
-  }
-
+public class TestRunStartedEvent extends TestRunEventWithTestCase {
   /**
    * Constructor to create {@link TestRunStartedEvent}.
    *
    * @param testCase the test case that this event is for.
    */
-  TestRunStartedEvent(TestCase testCase) {
+  public TestRunStartedEvent(TestCase testCase) {
     super(testCase);
   }
 
-  public static final Creator<TestRunStartedEvent> CREATOR =
-      new Creator<TestRunStartedEvent>() {
-        @Override
-        public TestRunStartedEvent createFromParcel(Parcel source) {
-          return new TestRunStartedEvent(source);
-        }
+  TestRunStartedEvent(Parcel source) {
+    super(source);
+  }
 
-        @Override
-        public TestRunStartedEvent[] newArray(int size) {
-          return new TestRunStartedEvent[size];
-        }
-      };
+  @Override
+  String instanceType() {
+    return getClass().getName();
+  }
 }

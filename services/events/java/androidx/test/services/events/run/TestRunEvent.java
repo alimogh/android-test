@@ -18,38 +18,11 @@ package androidx.test.services.events.run;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import androidx.test.services.events.TestCase;
 
-/**
- * Base class for all [TestRunEvent]s to implement. Every {@link TestRunEvent} must have a {@link
- * TestCase} for it to be identified.
- */
-public class TestRunEvent implements Parcelable {
-
-  /** Returns the {@link TestCase} this event is associated to. */
-  public TestCase getTestCase() {
-    return testCase;
-  }
-
-  private final TestCase testCase;
-
-  /**
-   * Creates a {@link TestRunEvent} from an {@link Parcel}.
-   *
-   * @param source Android {@link Parcel} to read from.
-   */
-  TestRunEvent(Parcel source) {
-    testCase = new TestCase(source);
-  }
-
-  /**
-   * Constructor to create a {@link TestRunEvent}
-   *
-   * @param testCase the test case this event represents,
-   */
-  public TestRunEvent(TestCase testCase) {
-    this.testCase = testCase;
-  }
+/** Base class for all other {@code TestRunEvents} to extend. */
+public abstract class TestRunEvent implements Parcelable {
+  /** Creates a {@link TestRunEvent}. */
+  TestRunEvent() {}
 
   @Override
   public int describeContents() {
@@ -58,14 +31,48 @@ public class TestRunEvent implements Parcelable {
 
   @Override
   public void writeToParcel(Parcel parcel, int i) {
-    testCase.writeToParcel(parcel, 0);
+    parcel.writeString(instanceType());
   }
+
+  /**
+   * The {@link ITestRunEvent#send(TestRunEvent)} service method receives an instance of the {@link
+   * TestRunEvent} base class, so the {@link #CREATOR} factory in this class is being used to create
+   * the event instances, not the {@code CREATOR} of one of its derived instances.
+   *
+   * <p>Therefore the {@code createFromParcel} method first needs to read a String containing the
+   * class name of the correct derived type to instantiate. Derived classes should override this
+   * method to return the full class name of that event type.
+   *
+   * <p>Also note that this means only this base class provides a {@code CREATOR}, since the derived
+   * classes don't need one.
+   *
+   * @return the result of {@code getClass().getName()} of the final derived event class that
+   *     extends this base class
+   */
+  abstract String instanceType();
 
   public static final Parcelable.Creator<TestRunEvent> CREATOR =
       new Parcelable.Creator<TestRunEvent>() {
         @Override
         public TestRunEvent createFromParcel(Parcel source) {
-          return new TestRunEvent(source);
+          String instanceType = source.readString();
+          if (TestAssumptionFailureEvent.class.getName().equals(instanceType)) {
+            return new TestAssumptionFailureEvent(source);
+          } else if (TestFailureEvent.class.getName().equals(instanceType)) {
+            return new TestFailureEvent(source);
+          } else if (TestFinishedEvent.class.getName().equals(instanceType)) {
+            return new TestFinishedEvent(source);
+          } else if (TestIgnoredEvent.class.getName().equals(instanceType)) {
+            return new TestIgnoredEvent(source);
+          } else if (TestRunFinishedEvent.class.getName().equals(instanceType)) {
+            return new TestRunFinishedEvent(source);
+          } else if (TestRunStartedEvent.class.getName().equals(instanceType)) {
+            return new TestRunStartedEvent(source);
+          } else if (TestStartedEvent.class.getName().equals(instanceType)) {
+            return new TestStartedEvent(source);
+          } else {
+            throw new IllegalStateException("Unrecognized instance type: " + instanceType);
+          }
         }
 
         @Override

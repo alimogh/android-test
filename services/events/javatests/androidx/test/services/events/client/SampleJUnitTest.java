@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 The Android Open Source Project
+ * Copyright (C) 2017 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package androidx.test.services.events.discovery;
+package androidx.test.services.events.client;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-/** Denotes that test discovery has started */
-public class TestDiscoveryStartedEvent extends TestDiscoveryEvent {
-  @Override
-  String instanceType() {
-    return getClass().getName();
-  }
+/** Not actually a test to be run, but something to generate a description from. */
+@RunWith(JUnit4.class)
+public class SampleJUnitTest {
+
+  @Test
+  public void sampleTest() {}
 }

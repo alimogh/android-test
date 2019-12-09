@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package androidx.test.services.events.discovery;
+package androidx.test.services.events;
 
+import androidx.annotation.NonNull;
 
-/** Denotes that test discovery has started */
-public class TestDiscoveryStartedEvent extends TestDiscoveryEvent {
-  @Override
-  String instanceType() {
-    return getClass().getName();
+/** A checked {@link Exception} indicating that a test event operation failed. */
+public class TestEventException extends Exception {
+  /** Creates a new {@link TestEventException} with the given message. */
+  public TestEventException(@NonNull String message) {
+    super(message);
+  }
+
+  /** Creates a new {@link TestEventException} with the given message and original exception. */
+  public TestEventException(@NonNull String message, @NonNull Throwable cause) {
+    super(message, cause);
   }
 }

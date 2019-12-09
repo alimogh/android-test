@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 The Android Open Source Project
+ * Copyright (C) 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package androidx.test.services.events.run;
+package androidx.test.services.events.discovery;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -26,28 +26,30 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Class to test parcelable {@link TestRunEvent}. We write and read from the parcel to test if every
- * thing is done correctly.
+ * Unit tests for the {@link TestFoundEvent} parcelable. We write and read from the parcel to verify
+ * that {@link TestDiscoveryEvent#CREATOR} instantiates it correctly.
  */
 @RunWith(AndroidJUnit4.class)
-public class TestRunEventParcelableTest {
+public class TestFoundEventTest {
 
   @Test
-  public void testEventToParcelableTest_basicTestCaseParcelable() {
-
+  public void testFoundEvent() {
     String className = "Class";
     String methodName = "Method";
     TestCase testCase = new TestCase(className, methodName, new ArrayList<>(), new ArrayList<>());
 
-    TestRunEvent testRunEvent = new TestRunEvent(testCase);
+    TestFoundEvent testFoundEvent = new TestFoundEvent(testCase);
+
     Parcel parcel = Parcel.obtain();
-    testRunEvent.writeToParcel(parcel, 0);
+    testFoundEvent.writeToParcel(parcel, 0);
 
     parcel.setDataPosition(0);
+    TestDiscoveryEvent testDiscoveryEventFromParcel =
+        TestDiscoveryEvent.CREATOR.createFromParcel(parcel);
+    assertThat(testDiscoveryEventFromParcel).isInstanceOf(TestFoundEvent.class);
 
-    TestRunEvent testRunEventFromParcel = TestRunEvent.CREATOR.createFromParcel(parcel);
-
-    assertThat(testRunEventFromParcel.getTestCase().getClassName()).isEqualTo(className);
-    assertThat(testRunEventFromParcel.getTestCase().getMethodName()).isEqualTo(methodName);
+    TestFoundEvent result = (TestFoundEvent) testDiscoveryEventFromParcel;
+    assertThat(result.testCase.className).isEqualTo(className);
+    assertThat(result.testCase.methodName).isEqualTo(methodName);
   }
 }

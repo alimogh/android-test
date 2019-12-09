@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package androidx.test.services.events;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,37 +28,27 @@ import java.util.List;
  * Parcelable </a>
  */
 public final class Annotation implements Parcelable {
-
-  public final String name;
-  public List<AnnotationValue> values = new ArrayList<>();
-
-  public String getName() {
-    return name;
-  }
-
-  public List<AnnotationValue> getValues() {
-    return values;
-  }
-
-  /**
-   * Constructor to create an {@link Annotation} given an Android Parcel.
-   *
-   * @param source Android {@link Parcel} to read from.
-   */
-  public Annotation(Parcel source) {
-    name = source.readString();
-    source.readTypedList(values, AnnotationValue.CREATOR);
-  }
+  /** Name of the annotation. For example: "com.java.Foo". */
+  @NonNull public final String name;
+  /** The annotation's field values, if any. */
+  @NonNull public final List<AnnotationValue> values;
 
   /**
    * Constructor to create an {@link Annotation}.
    *
-   * @param annotationName Name of the annotation E.g "com.java.Foo"
+   * @param annotationName Name of the annotation e.g. "com.java.Foo"
    * @param annotationValues Data class containing the values of the annotation.
    */
-  public Annotation(String annotationName, List<AnnotationValue> annotationValues) {
+  public Annotation(
+      @NonNull String annotationName, @NonNull List<AnnotationValue> annotationValues) {
     this.name = annotationName;
     this.values = annotationValues;
+  }
+
+  private Annotation(Parcel source) {
+    name = source.readString();
+    values = new ArrayList<>();
+    source.readTypedList(values, AnnotationValue.CREATOR);
   }
 
   @Override

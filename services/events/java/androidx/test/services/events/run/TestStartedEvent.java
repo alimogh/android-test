@@ -17,43 +17,29 @@
 package androidx.test.services.events.run;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 import androidx.test.services.events.TestCase;
 
 /**
- * Denotes that the test ended with a TEST_STARTED. It has the {@link TestCase} object to denote
- * which case this event is associated to.
+ * Denotes that the test ended with a TEST_STARTED. It has the {@link TestCase} object that this
+ * event is associated with.
  */
-public class TestStartedEvent extends TestRunEvent {
+public class TestStartedEvent extends TestRunEventWithTestCase {
 
   /**
-   * Constructor to create an {@link TestRunEvent} from an Android Parcel.
+   * Creates a {@link TestStartedEvent}.
    *
-   * @param source Android {@link Parcel} to read from.
+   * @param testCase the test case that this event is for
    */
+  public TestStartedEvent(TestCase testCase) {
+    super(testCase);
+  }
+
   TestStartedEvent(Parcel source) {
     super(source);
   }
 
-  /**
-   * Constructor to create {@link TestStartedEvent}.
-   *
-   * @param testCase the test case that this event is for.
-   */
-  TestStartedEvent(TestCase testCase) {
-    super(testCase);
+  @Override
+  String instanceType() {
+    return getClass().getName();
   }
-
-  public static final Parcelable.Creator<TestStartedEvent> CREATOR =
-      new Parcelable.Creator<TestStartedEvent>() {
-        @Override
-        public TestStartedEvent createFromParcel(Parcel source) {
-          return new TestStartedEvent(source);
-        }
-
-        @Override
-        public TestStartedEvent[] newArray(int size) {
-          return new TestStartedEvent[size];
-        }
-      };
 }
