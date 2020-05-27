@@ -17,13 +17,14 @@
 package androidx.test.services.events.client;
 
 import android.content.Context;
+import androidx.annotation.NonNull;
 
 /**
- * Connects to the remote service E.g. {@code androidx.test.orchestrator.OrchestratorService} and
+ * Connects to the remote service e.g. {@code androidx.test.orchestrator.OrchestratorService} and
  * notifies {@link androidx.test.runner.AndroidJUnitRunner} (the caller) when the connection is
  * established via the {@link TestEventClientConnectListener} interface.
  */
-public interface OrchestratorConnection {
+public interface TestEventServiceConnection {
 
   /**
    * Connects/binds to the service. The connect operation is asynchronous, so the caller needs to
@@ -32,5 +33,5 @@ public interface OrchestratorConnection {
    *
    * @param context the instrumentation {@link Context} to use for binding to the service
    */
-  void connect(Context context);
+  void connect(@NonNull Context context);
 }

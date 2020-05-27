@@ -21,15 +21,17 @@ import android.content.Context;
 import android.os.IBinder;
 
 /**
- * Base interface for caller's of {@link OrchestratorConnection} must implement. {@link
- * #onTestEventClientConnect()} will be called by the connection when the service connects.
+ * Clients of an {@link TestEventServiceConnection} implementation must implement this interface to
+ * receive the {@link #onTestEventClientConnect()} callback from the connection implementation to
+ * indicate that the service connection has been successful.
  */
-interface TestEventClientConnectListener {
+public interface TestEventClientConnectListener {
 
   /**
    * Called from the connection's {@link
    * android.content.ServiceConnection#onServiceConnected(ComponentName, IBinder)} implementation to
-   * indicate that the async {@link #connect(Context)} operation has finished.
+   * indicate that the async {@link TestEventServiceConnection#connect(Context)} operation has
+   * finished.
    */
   void onTestEventClientConnect();
 }
